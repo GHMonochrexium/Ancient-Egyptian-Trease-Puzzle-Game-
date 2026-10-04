@@ -1,0 +1,6 @@
+{
+  "name": "Ancient Egyptian Treasure Hunt",
+  "description": "An immersive mystery puzzle adventure where you explore six randomized ancient Egyptian chambers to uncover the lost pharaoh's treasure.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

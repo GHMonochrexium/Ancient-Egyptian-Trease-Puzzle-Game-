@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-cinzel: 'Cinzel', serif;
+    --font-decorative: 'Cinzel Decorative', serif;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+}
+
+.font-cinzel {
+  font-family: var(--font-cinzel);
+}
+
+.font-decorative {
+  font-family: var(--font-decorative);
+}
+
+.font-sans-clean {
+  font-family: var(--font-sans);
+}
+
+.font-mono-clean {
+  font-family: var(--font-mono);
+}
+
+/* Ancient Egyptian Stone & Gold Effects */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #f7e096 0%, #d4af37 40%, #aa7c11 75%, #fdf3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-border {
+  border-color: #8c6d31;
+}
+
+.stone-panel {
+  background: radial-gradient(circle at 50% 0%, #221811 0%, #150f0b 70%, #0d0907 100%);
+  border: 1px solid rgba(180, 138, 70, 0.28);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 230, 160, 0.1);
+}
+
+.papyrus-panel {
+  background: radial-gradient(ellipse at center, #2e2116 0%, #1a120c 100%);
+  border: 2px solid #84623a;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.85);
+}
+
+.hieroglyph-glow {
+  text-shadow: 0 0 12px rgba(245, 185, 66, 0.7), 0 0 24px rgba(212, 175, 55, 0.4);
+}
+
+.turquoise-glow {
+  text-shadow: 0 0 12px rgba(64, 224, 208, 0.7), 0 0 24px rgba(32, 178, 170, 0.4);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #120e0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #5a4225;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #84623a;
+}
