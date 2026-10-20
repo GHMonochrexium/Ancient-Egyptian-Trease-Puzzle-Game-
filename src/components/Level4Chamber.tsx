@@ -35,7 +35,12 @@ export const Level4Chamber: React.FC<Level4ChamberProps> = ({
   const handleUnlockGate = (codeToTest: string) => {
     sound.playStoneClick();
     const cleanCode = codeToTest.trim().replace(/\s+/g, '-');
-    if (cleanCode === level3.unlockedCode || cleanCode.replace(/-/g, '') === level3.unlockedCode.replace(/-/g, '')) {
+    if (
+      cleanCode === level3.unlockedCode ||
+      cleanCode === String(level3.secretNumber) ||
+      cleanCode === String(level3.hiddenNumber) ||
+      cleanCode.replace(/-/g, '') === level3.unlockedCode.replace(/-/g, '')
+    ) {
       sound.playStoneSlide();
       setIsGateOpen(true);
       setGateError(false);
@@ -164,20 +169,21 @@ export const Level4Chamber: React.FC<Level4ChamberProps> = ({
             The Cat Shrine Portal is Sealed
           </h2>
           <p className="text-xs text-[#a98f6d] mb-4">
-            Enter the 4-digit code recovered from Chamber III (The Vault of the Sandstorm) to enter the sacred court of Bastet.
+            Enter the single-digit sacred key recovered from Chamber III (The Vault of the Sandstorm) to enter the sacred court of Bastet.
           </p>
 
           <div className="flex items-center justify-center gap-2 mb-3">
             <input
               type="text"
+              maxLength={4}
               value={enteredGateCode}
               onChange={(e) => setEnteredGateCode(e.target.value)}
-              placeholder="e.g. 6-3-5-8"
-              className="px-4 py-2.5 bg-[#120d09] border border-[#6b502d] rounded-lg text-center font-mono-clean font-bold tracking-widest text-lg text-[#f7e096] focus:outline-none focus:border-[#d4af37] w-48"
+              placeholder={`e.g. ${level3.unlockedCode || '7'}`}
+              className="px-4 py-2.5 bg-[#120d09] border border-[#6b502d] rounded-lg text-center font-mono-clean font-bold tracking-widest text-2xl text-[#f7e096] focus:outline-none focus:border-[#d4af37] w-36"
             />
             <button
               onClick={() => handleUnlockGate(enteredGateCode)}
-              className="px-4 py-2.5 font-cinzel text-xs font-bold text-[#140e0a] bg-gradient-to-r from-[#e6c46e] to-[#c79c3c] rounded-lg hover:from-[#f5d78a] hover:to-[#dbaf4c] shadow transition-all"
+              className="px-4 py-2.5 font-cinzel text-xs font-bold text-[#140e0a] bg-gradient-to-r from-[#e6c46e] to-[#c79c3c] rounded-lg hover:from-[#f5d78a] hover:to-[#dbaf4c] shadow transition-all cursor-pointer"
             >
               Unseal
             </button>
@@ -185,7 +191,7 @@ export const Level4Chamber: React.FC<Level4ChamberProps> = ({
 
           {gateError && (
             <p className="text-xs text-rose-400 font-sans-clean mb-3">
-              The lock mechanism resists. Verify the code from Chamber III.
+              The lock mechanism resists. Enter the single-digit key from Chamber III.
             </p>
           )}
 
@@ -195,10 +201,10 @@ export const Level4Chamber: React.FC<Level4ChamberProps> = ({
                 setEnteredGateCode(level3.unlockedCode);
                 handleUnlockGate(level3.unlockedCode);
               }}
-              className="text-xs font-sans-clean text-[#d4af37] hover:underline flex items-center justify-center gap-1.5 mx-auto mt-2"
+              className="text-xs font-sans-clean text-[#d4af37] hover:underline flex items-center justify-center gap-1.5 mx-auto mt-2 cursor-pointer"
             >
               <KeyRound className="w-3.5 h-3.5" />
-              Use Code from Journal: {level3.unlockedCode}
+              Use Chamber III Key: <strong className="text-[#f7e096] text-sm">{level3.unlockedCode}</strong>
             </button>
           )}
         </div>
@@ -350,27 +356,26 @@ export const Level4Chamber: React.FC<Level4ChamberProps> = ({
                 <span className="text-[10px] font-cinzel text-[#a98f6d] uppercase tracking-widest block mb-1">
                   Gateway Key to Chamber V (Chamber of the Pharaoh's Order)
                 </span>
-                <div className="text-2xl sm:text-3xl font-mono-clean font-bold text-[#f7e096] tracking-[0.25em]">
+                <div className="text-3xl sm:text-4xl font-mono-clean font-bold text-[#f7e096] tracking-[0.25em]">
                   {level4.unlockedCode}
                 </div>
+                <span className="text-[11px] text-[#40e0d0] block mt-1 font-mono-clean">
+                  ★ Single-digit sacred key for Chamber V threshold
+                </span>
               </div>
 
-              {/* Discovered Sacred Number Token 4 */}
-              {sacredToken && (
-                <div className="flex items-center justify-center gap-3 p-3 bg-[#24170d] rounded-lg border border-[#78592c] mb-6">
-                  <span className="text-3xl text-[#f7e096] hieroglyph-glow">
-                    {sacredToken.glyphChar}
+              {/* Discovered Hidden Number for Chamber V */}
+              <div className="flex items-center justify-center gap-3 p-3 bg-[#24170d] rounded-lg border border-[#78592c] mb-6">
+                <span className="text-3xl text-[#f7e096] hieroglyph-glow">𓃠</span>
+                <div className="text-left">
+                  <span className="text-xs font-cinzel font-bold text-[#f3e6cf] block">
+                    Hidden Seal Number IV Discovered: <strong className="text-[#f7e096] text-lg">{level4.hiddenNumber}</strong>
                   </span>
-                  <div className="text-left">
-                    <span className="text-xs font-cinzel font-bold text-[#f3e6cf] block">
-                      Sacred Stone: {sacredToken.glyphName}
-                    </span>
-                    <span className="text-[11px] text-[#a98f6d]">
-                      Carved Rune Value: <strong className="text-[#f7e096]">{sacredToken.value}</strong> (Recorded in Journal for Chamber V)
-                    </span>
-                  </div>
+                  <span className="text-[11px] text-[#a98f6d]">
+                    Stamped beneath Bastet’s golden shrine (Single-digit number). Automatically recorded in your Field Journal for Chamber V!
+                  </span>
                 </div>
-              )}
+              </div>
 
               <button
                 onClick={() => {

@@ -17,9 +17,21 @@ import { Level3Chamber } from './components/Level3Chamber';
 import { Level4Chamber } from './components/Level4Chamber';
 import { Level5Chamber } from './components/Level5Chamber';
 import { Level6Chamber } from './components/Level6Chamber';
+import { Level7Chamber } from './components/Level7Chamber';
+import { Level8Chamber } from './components/Level8Chamber';
+import { Level9Chamber } from './components/Level9Chamber';
+import { Level10Chamber } from './components/Level10Chamber';
 import { TreasureVictory } from './components/TreasureVictory';
 import { GameOverScreen } from './components/GameOverScreen';
-import { Compass, Scroll, BookOpen, Volume2, VolumeX, RotateCcw } from 'lucide-react';
+import { Act3TitleScreen } from './components/Act3TitleScreen';
+import { LevelXSacrifice } from './components/LevelXSacrifice';
+import { LevelYMummy } from './components/LevelYMummy';
+import { LevelZFinalChallenge } from './components/LevelZFinalChallenge';
+import { DarkRealmEntrance } from './components/DarkRealmEntrance';
+import { PurgatoriumTrials } from './components/PurgatoriumTrials';
+import { SecretTreasureEnding } from './components/SecretTreasureEnding';
+import { generateLevelXState, generateLevelYState, generateLevelZState } from './game/generator';
+import { Compass, Scroll, BookOpen, Volume2, VolumeX, RotateCcw, Flame } from 'lucide-react';
 
 export default function App() {
   const [gameMode, setGameMode] = useState<GameMode>('TITLE_MENU');
@@ -99,6 +111,136 @@ export default function App() {
     sound.setMusicMuted(next);
   };
 
+  // --- ACT III: PURGATORIUM & DARK REALM HANDLERS ---
+  const handleEnterAct3 = () => {
+    sound.playCurseWhisper();
+    setGameState((prev) => ({
+      ...prev,
+      act3: {
+        ...prev.act3,
+        isDiscovered: true,
+      },
+    }));
+    setGameMode('ACT3_INTRO');
+  };
+
+  const handleBeginGatewayTrials = () => {
+    setGameState((prev) => ({
+      ...prev,
+      act3: {
+        ...prev.act3,
+        gatewayLevel: 'X',
+      },
+    }));
+    setGameMode('ACT3_LEVEL_X');
+  };
+
+  const handleProceedToLevelY = () => {
+    setGameState((prev) => ({
+      ...prev,
+      act3: {
+        ...prev.act3,
+        gatewayLevel: 'Y',
+      },
+    }));
+    setGameMode('ACT3_LEVEL_Y');
+  };
+
+  const handleProceedToLevelZ = () => {
+    setGameState((prev) => ({
+      ...prev,
+      act3: {
+        ...prev.act3,
+        gatewayLevel: 'Z',
+      },
+    }));
+    setGameMode('ACT3_LEVEL_Z');
+  };
+
+  const handleEnterDarkRealm = () => {
+    setGameMode('DARK_REALM_ENTRANCE');
+  };
+
+  const handleBeginPurgatoriumTrials = () => {
+    // Start continuous 7-minute trial from Trial 1
+    setGameState((prev) => ({
+      ...prev,
+      act3: {
+        ...prev.act3,
+        purgatorium: {
+          timeRemaining: 420, // 07:00
+          currentTrial: 1,
+          trialsCompleted: [],
+          isFailed: false,
+          isCompleted: false,
+        },
+      },
+    }));
+    setGameMode('PURGATORIUM_TRIALS');
+  };
+
+  const handleCompletePurgatorium = () => {
+    setGameState((prev) => ({
+      ...prev,
+      act3: {
+        ...prev.act3,
+        hasUnlockedSecretEnding: true,
+        purgatorium: {
+          ...prev.act3.purgatorium,
+          isCompleted: true,
+        },
+      },
+    }));
+    setGameMode('SECRET_VICTORY');
+  };
+
+  const handleFailPurgatorium = () => {
+    // Reset Act III gateway progress back to Level X, preserving Acts I & II
+    setGameState((prev) => ({
+      ...prev,
+      act3: {
+        ...prev.act3,
+        gatewayLevel: 'X',
+        levelX: generateLevelXState(3),
+        levelY: generateLevelYState(),
+        levelZ: generateLevelZState(),
+        purgatorium: {
+          timeRemaining: 420,
+          currentTrial: 1,
+          trialsCompleted: [],
+          isFailed: false,
+          isCompleted: false,
+        },
+      },
+    }));
+    setGameMode('ACT3_LEVEL_X');
+  };
+
+  const handleReplayAct3 = () => {
+    setGameState((prev) => ({
+      ...prev,
+      act3: {
+        ...prev.act3,
+        gatewayLevel: 'X',
+        levelX: generateLevelXState(3),
+        levelY: generateLevelYState(),
+        levelZ: generateLevelZState(),
+        purgatorium: {
+          timeRemaining: 420,
+          currentTrial: 1,
+          trialsCompleted: [],
+          isFailed: false,
+          isCompleted: false,
+        },
+      },
+    }));
+    setGameMode('ACT3_INTRO');
+  };
+
+  const handleReturnToMainGame = () => {
+    setGameMode('PLAYING');
+  };
+
   const currentChamberMeta = CHAMBER_METADATA.find((c) => c.id === gameState.currentLevel) || CHAMBER_METADATA[0];
 
   return (
@@ -161,6 +303,27 @@ export default function App() {
               <BookOpen className="w-4 h-4 text-[#d4af37]" />
               <span className="hidden sm:inline">Journal</span>
             </button>
+
+            {/* Act III Secret Gateway Shortcut if discovered */}
+            {gameState.act3.isDiscovered && (
+              <button
+                onClick={() => {
+                  sound.playCurseWhisper();
+                  setGameMode(
+                    gameState.act3.gatewayLevel === 'X'
+                      ? 'ACT3_LEVEL_X'
+                      : gameState.act3.gatewayLevel === 'Y'
+                      ? 'ACT3_LEVEL_Y'
+                      : 'ACT3_LEVEL_Z'
+                  );
+                }}
+                className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#2c0b47] to-[#160524] hover:from-[#3f1064] hover:to-[#220737] border border-[#a855f7] text-xs font-cinzel text-[#f5d0fe] transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0 shadow-[0_0_12px_rgba(168,85,247,0.3)] cursor-pointer"
+                title="Enter Purgatorium (Act III)"
+              >
+                <Flame className="w-4 h-4 text-[#e879f9]" />
+                <span className="hidden sm:inline">Act III</span>
+              </button>
+            )}
           </nav>
         )}
 
@@ -196,6 +359,8 @@ export default function App() {
             onToggleMute={handleToggleMute}
             isMusicMuted={isMusicMuted}
             onToggleMusic={handleToggleMusic}
+            isAct3Discovered={gameState.act3.isDiscovered}
+            onEnterAct3={handleEnterAct3}
           />
         )}
 
@@ -251,9 +416,45 @@ export default function App() {
               <Level6Chamber
                 gameState={gameState}
                 onUpdateState={handleUpdateGameState}
-                onVictory={handleVictory}
+                onProceedToLevel={handleProceedToLevel}
+                onOpenScroll={() => setIsScrollOpen(true)}
+              />
+            )}
+
+            {gameState.currentLevel === 7 && (
+              <Level7Chamber
+                gameState={gameState}
+                onUpdateState={handleUpdateGameState}
+                onProceedToLevel={handleProceedToLevel}
+                onOpenScroll={() => setIsScrollOpen(true)}
+              />
+            )}
+
+            {gameState.currentLevel === 8 && (
+              <Level8Chamber
+                gameState={gameState}
+                onUpdateState={handleUpdateGameState}
+                onProceedToLevel={handleProceedToLevel}
                 onOpenScroll={() => setIsScrollOpen(true)}
                 onTriggerGameOver={handleTriggerGameOver}
+              />
+            )}
+
+            {gameState.currentLevel === 9 && (
+              <Level9Chamber
+                gameState={gameState}
+                onUpdateState={handleUpdateGameState}
+                onProceedToLevel={handleProceedToLevel}
+                onOpenScroll={() => setIsScrollOpen(true)}
+              />
+            )}
+
+            {gameState.currentLevel === 10 && (
+              <Level10Chamber
+                gameState={gameState}
+                onUpdateState={handleUpdateGameState}
+                onVictory={handleVictory}
+                onOpenScroll={() => setIsScrollOpen(true)}
               />
             )}
           </div>
@@ -267,6 +468,66 @@ export default function App() {
           <GameOverScreen
             reason={gameOverReason}
             onRestart={handleRestart}
+          />
+        )}
+
+        {/* --- ACT III: PURGATORIUM & THE DARK REALM SCREENS --- */}
+        {gameMode === 'ACT3_INTRO' && (
+          <Act3TitleScreen
+            onBeginTrials={handleBeginGatewayTrials}
+            onReturnToMainGame={handleReturnToMainGame}
+          />
+        )}
+
+        {gameMode === 'ACT3_LEVEL_X' && (
+          <LevelXSacrifice
+            gameState={gameState}
+            onUpdateState={handleUpdateGameState}
+            onProceedToLevelY={handleProceedToLevelY}
+            onReturnToMainGame={handleReturnToMainGame}
+          />
+        )}
+
+        {gameMode === 'ACT3_LEVEL_Y' && (
+          <LevelYMummy
+            gameState={gameState}
+            onUpdateState={handleUpdateGameState}
+            onProceedToLevelZ={handleProceedToLevelZ}
+            onReturnToMainGame={handleReturnToMainGame}
+          />
+        )}
+
+        {gameMode === 'ACT3_LEVEL_Z' && (
+          <LevelZFinalChallenge
+            gameState={gameState}
+            onUpdateState={handleUpdateGameState}
+            onEnterDarkRealm={handleEnterDarkRealm}
+            onReturnToMainGame={handleReturnToMainGame}
+          />
+        )}
+
+        {gameMode === 'DARK_REALM_ENTRANCE' && (
+          <DarkRealmEntrance
+            onBeginPurgatoriumTrials={handleBeginPurgatoriumTrials}
+            onReturnToMainGame={handleReturnToMainGame}
+          />
+        )}
+
+        {gameMode === 'PURGATORIUM_TRIALS' && (
+          <PurgatoriumTrials
+            gameState={gameState}
+            onUpdateState={handleUpdateGameState}
+            onCompletePurgatorium={handleCompletePurgatorium}
+            onFailPurgatorium={handleFailPurgatorium}
+            onReturnToMainGame={handleReturnToMainGame}
+          />
+        )}
+
+        {gameMode === 'SECRET_VICTORY' && (
+          <SecretTreasureEnding
+            onReplayAct3={handleReplayAct3}
+            onReturnToMainGame={handleReturnToMainGame}
+            onFullRestart={handleRestart}
           />
         )}
       </main>
@@ -287,6 +548,7 @@ export default function App() {
         isOpen={isScrollOpen}
         onClose={() => setIsScrollOpen(false)}
         currentLevel={gameState.currentLevel}
+        onEnterAct3={handleEnterAct3}
       />
 
       <JournalDrawer

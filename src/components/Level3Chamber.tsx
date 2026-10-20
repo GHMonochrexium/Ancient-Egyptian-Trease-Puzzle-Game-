@@ -261,7 +261,7 @@ export const Level3Chamber: React.FC<Level3ChamberProps> = ({
           </div>
         </div>
         <p className="text-xs text-[#bda482] font-sans-clean max-w-2xl mx-auto">
-          Ceiling vents pour suffocating desert sand into the chamber. You must divine the sacred number between 1 and 10 before you are buried alive!
+          Ceiling vents pour suffocating desert sand into the chamber. You must divine the sacred single-digit number between 1 and 9 before you are buried alive!
         </p>
       </div>
 
@@ -347,7 +347,7 @@ export const Level3Chamber: React.FC<Level3ChamberProps> = ({
                   Sandstorm Influx
                 </span>
                 <h3 className="text-base font-cinzel font-bold text-[#f7e096]">
-                  Divine the Sacred Number (1 – 10)
+                  Divine the Sacred Number (1 – 9)
                 </h3>
               </div>
               <div
@@ -376,13 +376,13 @@ export const Level3Chamber: React.FC<Level3ChamberProps> = ({
               </div>
             )}
 
-            {/* Number Selector (1 to 10) */}
+            {/* Number Selector (1 to 9 Single Digit) */}
             <div className="mb-6">
               <span className="text-xs font-cinzel font-bold text-[#f7e096] block mb-2 text-center">
-                Select Your Divination:
+                Select Your Single-Digit Divination (1–9):
               </span>
-              <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+              <div className="grid grid-cols-3 sm:grid-cols-9 gap-2">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => {
                   const wasGuessed = level3.guesses.some((g) => g.guess === num);
                   const isCorrect = level3.isSolved && level3.secretNumber === num;
 
@@ -396,7 +396,7 @@ export const Level3Chamber: React.FC<Level3ChamberProps> = ({
                           ? 'bg-emerald-600 text-white border-2 border-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.5)]'
                           : wasGuessed
                           ? 'bg-[#18110b] text-[#745f47] border border-[#3e2c1c] opacity-60'
-                          : 'bg-gradient-to-b from-[#342417] to-[#1c130c] border border-[#8c6d31] text-[#f7e096] hover:border-[#f7e096] hover:scale-105'
+                          : 'bg-gradient-to-b from-[#342417] to-[#1c130c] border border-[#8c6d31] text-[#f7e096] hover:border-[#f7e096] hover:scale-105 cursor-pointer'
                       }`}
                     >
                       {num}
@@ -453,27 +453,26 @@ export const Level3Chamber: React.FC<Level3ChamberProps> = ({
                   <span className="text-[10px] font-cinzel text-[#a98f6d] uppercase tracking-widest block mb-1">
                     Gateway Key to Chamber IV (Shrine of Bastet)
                   </span>
-                  <div className="text-2xl sm:text-3xl font-mono-clean font-bold text-[#f7e096] tracking-[0.25em]">
+                  <div className="text-3xl sm:text-4xl font-mono-clean font-bold text-[#f7e096] tracking-[0.25em]">
                     {level3.unlockedCode}
                   </div>
+                  <span className="text-[11px] text-[#40e0d0] block mt-1 font-mono-clean">
+                    ★ Single-digit sacred key for Chamber IV threshold
+                  </span>
                 </div>
 
-                {/* Discovered Sacred Number Token 3 */}
-                {sacredToken && (
-                  <div className="flex items-center justify-center gap-3 p-3 bg-[#24170d] rounded-lg border border-[#78592c] mb-6">
-                    <span className="text-3xl text-[#f7e096] hieroglyph-glow">
-                      {sacredToken.glyphChar}
+                {/* Discovered Hidden Number for Chamber V */}
+                <div className="flex items-center justify-center gap-3 p-3 bg-[#24170d] rounded-lg border border-[#78592c] mb-6">
+                  <span className="text-3xl text-[#f7e096] hieroglyph-glow">𓇳</span>
+                  <div className="text-left">
+                    <span className="text-xs font-cinzel font-bold text-[#f3e6cf] block">
+                      Hidden Seal Number III Discovered: <strong className="text-[#f7e096] text-base">{level3.hiddenNumber}</strong>
                     </span>
-                    <div className="text-left">
-                      <span className="text-xs font-cinzel font-bold text-[#f3e6cf] block">
-                        Sacred Stone: {sacredToken.glyphName}
-                      </span>
-                      <span className="text-[11px] text-[#a98f6d]">
-                        Carved Rune Value: <strong className="text-[#f7e096]">{sacredToken.value}</strong> (Recorded in Journal for Chamber V)
-                      </span>
-                    </div>
+                    <span className="text-[11px] text-[#a98f6d]">
+                      Divined from the sandstorm altar. Automatically recorded in your Field Journal for Chamber V!
+                    </span>
                   </div>
-                )}
+                </div>
 
                 <button
                   onClick={() => {

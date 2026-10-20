@@ -239,6 +239,54 @@ class SoundManager {
     osc.stop(t + 0.26);
   }
 
+  // Earthquake / room shaking effect when losing to Pharaoh statue
+  public playEarthquakeShake() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(65, t);
+    osc.frequency.linearRampToValueAtTime(35, t + 0.6);
+
+    gain.gain.setValueAtTime(0.4, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.65);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(t);
+    osc.stop(t + 0.7);
+  }
+
+  // Heavy guardian colossus step
+  public playGuardianStep() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(90, t);
+    osc.frequency.exponentialRampToValueAtTime(30, t + 0.18);
+
+    gain.gain.setValueAtTime(0.35, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(t);
+    osc.stop(t + 0.22);
+  }
+
   // Dynamic continuous Sandstorm Wind
   public updateSandstormWind(intensity: number) {
     // intensity: 0 to 1
@@ -330,6 +378,14 @@ class SoundManager {
     });
   }
 
+  public playVictoryFanfare() {
+    this.playTreasureVictory();
+  }
+
+  public playEarthquakeRumble() {
+    this.playEarthquakeShake();
+  }
+
   // Synthesized ambient temple music
   public startMusic() {
     if (this.isMusicMuted || this.ambientOsc) return;
@@ -374,6 +430,130 @@ class SoundManager {
       osc.start(now);
       osc.stop(now + 2.6);
     }, 4500);
+  }
+
+  // Dark Realm sinister transition audio
+  public playDarkRealmTransition() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    // Low sub rumble
+    const subOsc = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    subOsc.type = 'sawtooth';
+    subOsc.frequency.setValueAtTime(55, t);
+    subOsc.frequency.exponentialRampToValueAtTime(28, t + 3.0);
+
+    const subFilter = this.ctx.createBiquadFilter();
+    subFilter.type = 'lowpass';
+    subFilter.frequency.setValueAtTime(110, t);
+    subFilter.frequency.linearRampToValueAtTime(50, t + 3.0);
+
+    subGain.gain.setValueAtTime(0.01, t);
+    subGain.gain.linearRampToValueAtTime(0.4, t + 0.5);
+    subGain.gain.exponentialRampToValueAtTime(0.001, t + 3.2);
+
+    subOsc.connect(subFilter);
+    subFilter.connect(subGain);
+    subGain.connect(this.ctx.destination);
+
+    subOsc.start(t);
+    subOsc.stop(t + 3.3);
+
+    // Eerie dissonance chime
+    const disFrequencies = [220, 233.08, 311.13, 440];
+    disFrequencies.forEach((f, i) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, t + i * 0.15);
+      g.gain.setValueAtTime(0.001, t + i * 0.15);
+      g.gain.linearRampToValueAtTime(0.12, t + i * 0.15 + 0.3);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 3.5);
+      osc.connect(g);
+      g.connect(this.ctx.destination);
+      osc.start(t + i * 0.15);
+      osc.stop(t + 3.6);
+    });
+  }
+
+  // Altar sacrifice consume flame sound
+  public playSacrificeConsume() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(80, t);
+    osc.frequency.exponentialRampToValueAtTime(220, t + 0.3);
+    osc.frequency.exponentialRampToValueAtTime(40, t + 0.8);
+
+    gain.gain.setValueAtTime(0.01, t);
+    gain.gain.linearRampToValueAtTime(0.35, t + 0.15);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.85);
+  }
+
+  // Bandage peel rustle sound
+  public playBandageUnwrap() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const dur = 0.35;
+    const bufferSize = Math.floor(this.ctx.sampleRate * dur);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(800, t);
+    filter.Q.setValueAtTime(1.5, t);
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.2, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(t);
+  }
+
+  // Curse whisper / eerie alert
+  public playCurseWhisper() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(165, t);
+    osc.frequency.linearRampToValueAtTime(155, t + 0.6);
+    gain.gain.setValueAtTime(0.01, t);
+    gain.gain.linearRampToValueAtTime(0.25, t + 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.75);
   }
 
   public stopMusic() {

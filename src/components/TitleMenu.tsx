@@ -8,6 +8,8 @@ interface TitleMenuProps {
   onToggleMute: () => void;
   isMusicMuted: boolean;
   onToggleMusic: () => void;
+  isAct3Discovered?: boolean;
+  onEnterAct3?: () => void;
 }
 
 export const TitleMenu: React.FC<TitleMenuProps> = ({
@@ -16,9 +18,13 @@ export const TitleMenu: React.FC<TitleMenuProps> = ({
   onToggleMute,
   isMusicMuted,
   onToggleMusic,
+  isAct3Discovered = false,
+  onEnterAct3,
 }) => {
   const [showInstructions, setShowInstructions] = useState(false);
   const [showCredits, setShowCredits] = useState(false);
+
+  const hasSecretEndingUnlocked = typeof window !== 'undefined' && localStorage.getItem('egyptian_hunt_secret_ending_unlocked') === 'true';
 
   return (
     <div className="relative min-h-[90vh] w-full flex items-center justify-center p-4">
@@ -49,7 +55,7 @@ export const TitleMenu: React.FC<TitleMenuProps> = ({
         </h1>
 
         <p className="text-xs sm:text-sm text-[#ceb896] max-w-md mx-auto leading-relaxed mb-8 font-sans-clean">
-          Trapped deep within an unmapped pharaonic necropolis, you must navigate six mysterious chambers, crack shifting ancient ciphers, and claim the lost treasure before time expires.
+          Trapped deep within an unmapped pharaonic necropolis, you must navigate ten mysterious chambers across two perilous tomb sectors, solve ancient ciphers and trials of knowledge, and claim the lost treasure.
         </p>
 
         {/* Action Buttons */}
@@ -64,6 +70,23 @@ export const TitleMenu: React.FC<TitleMenuProps> = ({
             <Play className="w-5 h-5 fill-current" />
             <span>Enter the Tomb (Start Game)</span>
           </button>
+
+          {/* Act III Purgatorium / Secret Ending Shortcut */}
+          {(isAct3Discovered || hasSecretEndingUnlocked) && onEnterAct3 && (
+            <button
+              onClick={() => {
+                sound.playCurseWhisper();
+                onEnterAct3();
+              }}
+              className="w-full py-3 px-5 font-cinzel font-bold text-xs text-[#faf5ff] bg-gradient-to-r from-[#4c1d95] via-[#7c3aed] to-[#4c1d95] hover:from-[#581c87] hover:via-[#9333ea] hover:to-[#581c87] border border-[#c084fc] rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span className="text-sm text-[#f5d0fe]">𓆣</span>
+              <span>
+                {hasSecretEndingUnlocked ? 'SECRET ENDING UNLOCKED · ENTER PURGATORIUM' : 'ACT III: PURGATORIUM UNLOCKED'}
+              </span>
+              <span className="text-sm text-[#f5d0fe]">𓆣</span>
+            </button>
+          )}
 
           <div className="grid grid-cols-2 gap-2.5">
             <button
@@ -129,16 +152,16 @@ export const TitleMenu: React.FC<TitleMenuProps> = ({
             </h2>
             <div className="space-y-3 text-xs sm:text-sm font-sans-clean text-[#decab0]">
               <p>
-                <strong>1. Six Sacred Chambers:</strong> Progress through 6 consecutive trials: Hall of Glyphs, Crypt of the Cipher, Sandstorm Vault, Shrine of Bastet (Meowdo), the Pharaoh’s Order, and Purgatory.
+                <strong>1. Ten Sacred Chambers:</strong> Progress through two tomb sectors: Chambers I–V (Hall of Glyphs, Crypt, Sandstorm, Bastet, Gateway of Four Seals) and Chambers VI–X (Pharaoh’s Duel, Binary Alphabet, Moving Guardian, Papyrus Cipher, The Last Seal).
               </p>
               <p>
-                <strong>2. Fully Randomized Puzzles:</strong> Every playthrough generates brand-new cipher shifts, secret numbers, symbol placements, and incantations. No two expeditions are alike!
+                <strong>2. Fully Randomized Puzzles:</strong> Every playthrough generates brand-new cipher shifts, binary codes, math equations, and secret combinations. No two expeditions are alike!
               </p>
               <p>
-                <strong>3. Compass & Field Journal:</strong> Click the Compass in the top bar to inspect chamber bearings. Use the Field Journal to review all unsealed codes and recovered sacred tokens.
+                <strong>3. Compass & Field Journal:</strong> Click the Compass in the top bar to inspect chamber bearings. Use the Field Journal to review all unsealed codes and recovered hidden numbers.
               </p>
               <p>
-                <strong>4. Peril & Timers:</strong> Chamber III (Sandstorm) gives you 60 seconds; Chamber VI (Purgatory) gives you 10 minutes. If time expires, the temple seals your fate.
+                <strong>4. Peril & Timers:</strong> Chamber III (Sandstorm) gives you 60 seconds; Chamber VIII (Moving Guardian) tests your speed against an advancing colossus. If danger overtakes you, the temple seals your fate.
               </p>
             </div>
 

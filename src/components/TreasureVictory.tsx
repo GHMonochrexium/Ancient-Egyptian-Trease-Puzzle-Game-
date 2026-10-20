@@ -108,7 +108,7 @@ export const TreasureVictory: React.FC<TreasureVictoryProps> = ({ onPlayAgain })
           </h1>
 
           <p className="text-sm sm:text-base text-[#e5d2b3] max-w-xl mx-auto leading-relaxed mb-6 font-sans-clean">
-            You have surmounted the Hall of Glyphs, deciphered the Granite Stele, outlasted the deadly Sandstorm, appeased Bastet, aligned the Cosmic Pedestals, and conquered Purgatory!
+            You have conquered all ten sacred trials: from the outer glyphs and sandstorm to the duel with the Pharaoh, the binary stream, the moving guardian, and breaking the Last Seal of the Lost Pharaoh!
           </p>
 
           {/* Lore Hint */}

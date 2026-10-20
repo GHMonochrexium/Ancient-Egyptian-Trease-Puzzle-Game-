@@ -194,22 +194,18 @@ export const Level1Chamber: React.FC<Level1ChamberProps> = ({
             </div>
           </div>
 
-          {/* Discovered Sacred Number Token */}
-          {sacredToken && (
-            <div className="flex items-center justify-center gap-3 p-3 bg-[#24170d] rounded-lg border border-[#78592c] mb-6">
-              <span className="text-3xl text-[#f7e096] hieroglyph-glow">
-                {sacredToken.glyphChar}
+          {/* Discovered Hidden Number for Chamber V */}
+          <div className="flex items-center justify-center gap-3 p-3 bg-[#24170d] rounded-lg border border-[#78592c] mb-6">
+            <span className="text-3xl text-[#f7e096] hieroglyph-glow">𓋹</span>
+            <div className="text-left">
+              <span className="text-xs font-cinzel font-bold text-[#f3e6cf] block">
+                Hidden Seal Number I Discovered: <strong className="text-[#f7e096] text-base">{level1.hiddenNumber}</strong>
               </span>
-              <div className="text-left">
-                <span className="text-xs font-cinzel font-bold text-[#f3e6cf] block">
-                  Sacred Stone: {sacredToken.glyphName}
-                </span>
-                <span className="text-[11px] text-[#a98f6d]">
-                  Carved Rune Value: <strong className="text-[#f7e096]">{sacredToken.value}</strong> (Recorded in Journal for Chamber V)
-                </span>
-              </div>
+              <span className="text-[11px] text-[#a98f6d]">
+                Carved into the sandstone slab base. Automatically recorded in your Field Journal for Chamber V!
+              </span>
             </div>
-          )}
+          </div>
 
           <button
             onClick={() => {
